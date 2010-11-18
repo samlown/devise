@@ -1,6 +1,7 @@
 **/*/log/*
 **/*/tmp/*
 *~
+*.swp
 coverage/*
 *.sqlite3
 .bundle

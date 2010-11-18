@@ -4,7 +4,6 @@ module Devise
       module Hook
         def devise_modules_hook!
           extend Schema
-          include Compatibility
           yield
           return unless Devise.apply_schema
           devise_modules.each { |m| send(m) if respond_to?(m, true) }
@@ -20,23 +19,6 @@ module Devise
           property name, type, options
         end
       end #Module Schema 
-
-
-      module Compatibility
-
-        def save(options = nil)
-          if options.is_a?(Hash) && options[:validate] == false
-            save!
-          else
-            super()
-          end
-        end
-
-        def update_attributes(*args)
-          update(*args)
-        end
-
-      end
 
     end #CouchRest
   end #Orm
