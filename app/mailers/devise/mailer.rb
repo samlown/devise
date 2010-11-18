@@ -1,6 +1,6 @@
 class Devise::Mailer < ::ActionMailer::Base
   include Devise::Controllers::ScopedViews
-  attr_reader :devise_mapping, :resource
+  attr_reader :scope_name, :resource
 
   def confirmation_instructions(record)
     setup_mail(record, :confirmation_instructions)
@@ -18,22 +18,36 @@ class Devise::Mailer < ::ActionMailer::Base
 
   # Configure default email options
   def setup_mail(record, action)
-    @scope_name     = Devise::Mapping.find_scope!(record)
-    @devise_mapping = Devise.mappings[@scope_name]
-    @resource       = instance_variable_set("@#{@devise_mapping.name}", record)
+    initialize_from_record(record)
+    mail headers_for(action)
+  end
 
-    template_path = ["devise/mailer"]
-    template_path.unshift "#{@devise_mapping.plural}/mailer" if self.class.scoped_views?
+  def initialize_from_record(record)
+    @scope_name = Devise::Mapping.find_scope!(record)
+    @resource   = instance_variable_set("@#{devise_mapping.name}", record)
+  end
 
+  def devise_mapping
+    @devise_mapping ||= Devise.mappings[scope_name]
+  end
+
+  def headers_for(action)
     headers = {
-      :subject => translate(@devise_mapping, action),
-      :from => mailer_sender(@devise_mapping),
-      :to => record.email,
-      :template_path => template_path
+      :subject       => translate(devise_mapping, action),
+      :from          => mailer_sender(devise_mapping),
+      :to            => resource.email,
+      :template_path => template_paths
     }
 
-    headers.merge!(record.headers_for(action)) if record.respond_to?(:headers_for)
-    mail(headers)
+    if resource.respond_to?(:headers_for)
+      headers.merge!(resource.headers_for(action))
+    end
+
+    unless headers.key?(:reply_to)
+      headers[:reply_to] = headers[:from]
+    end
+
+    headers
   end
 
   def mailer_sender(mapping)
@@ -42,6 +56,12 @@ class Devise::Mailer < ::ActionMailer::Base
     else
       Devise.mailer_sender
     end
+  end
+
+  def template_paths
+    template_path = [self.class.mailer_name]
+    template_path.unshift "#{@devise_mapping.plural}/mailer" if self.class.scoped_views?
+    template_path
   end
 
   # Setup a subject doing an I18n lookup. At first, it attemps to set a subject

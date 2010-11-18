@@ -5,27 +5,24 @@
 
 Gem::Specification.new do |s|
   s.name = %q{devise}
-  s.version = "1.1.rc1"
+  s.version = "1.2.rc"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jos\303\251 Valim", "Carlos Ant\303\264nio"]
-  s.date = %q{2010-06-13}
+  s.date = %q{2010-11-11}
   s.description = %q{Flexible authentication solution for Rails with Warden}
   s.email = %q{contact@plataformatec.com.br}
   s.extra_rdoc_files = [
     "CHANGELOG.rdoc",
      "MIT-LICENSE",
-     "README.rdoc",
-     "TODO"
+     "README.rdoc"
   ]
   s.files = [
     "CHANGELOG.rdoc",
-     "Gemfile",
      "MIT-LICENSE",
      "README.rdoc",
-     "Rakefile",
-     "TODO",
      "app/controllers/devise/confirmations_controller.rb",
+     "app/controllers/devise/omniauth_callbacks_controller.rb",
      "app/controllers/devise/passwords_controller.rb",
      "app/controllers/devise/registrations_controller.rb",
      "app/controllers/devise/sessions_controller.rb",
@@ -51,7 +48,6 @@ Gem::Specification.new do |s|
      "lib/devise/controllers/url_helpers.rb",
      "lib/devise/encryptors/authlogic_sha512.rb",
      "lib/devise/encryptors/base.rb",
-     "lib/devise/encryptors/bcrypt.rb",
      "lib/devise/encryptors/clearance_sha1.rb",
      "lib/devise/encryptors/restful_authentication_sha1.rb",
      "lib/devise/encryptors/sha1.rb",
@@ -67,7 +63,9 @@ Gem::Specification.new do |s|
      "lib/devise/models/authenticatable.rb",
      "lib/devise/models/confirmable.rb",
      "lib/devise/models/database_authenticatable.rb",
+     "lib/devise/models/encryptable.rb",
      "lib/devise/models/lockable.rb",
+     "lib/devise/models/omniauthable.rb",
      "lib/devise/models/recoverable.rb",
      "lib/devise/models/registerable.rb",
      "lib/devise/models/rememberable.rb",
@@ -76,8 +74,11 @@ Gem::Specification.new do |s|
      "lib/devise/models/trackable.rb",
      "lib/devise/models/validatable.rb",
      "lib/devise/modules.rb",
+     "lib/devise/omniauth.rb",
+     "lib/devise/omniauth/config.rb",
+     "lib/devise/omniauth/test_helpers.rb",
+     "lib/devise/omniauth/url_helpers.rb",
      "lib/devise/orm/active_record.rb",
-     "lib/devise/orm/data_mapper.rb",
      "lib/devise/orm/mongoid.rb",
      "lib/devise/path_checker.rb",
      "lib/devise/rails.rb",
@@ -91,15 +92,15 @@ Gem::Specification.new do |s|
      "lib/devise/strategies/token_authenticatable.rb",
      "lib/devise/test_helpers.rb",
      "lib/devise/version.rb",
-     "lib/generators/devise/devise/devise_generator.rb",
-     "lib/generators/devise/devise/templates/migration.rb",
-     "lib/generators/devise/install/install_generator.rb",
-     "lib/generators/devise/install/templates/README",
-     "lib/generators/devise/install/templates/devise.rb",
-     "lib/generators/devise/views/views_generator.rb",
-     "lib/generators/devise_generator.rb",
-     "lib/generators/devise_install_generator.rb",
-     "lib/generators/devise_views_generator.rb"
+     "lib/generators/active_record/devise_generator.rb",
+     "lib/generators/active_record/templates/migration.rb",
+     "lib/generators/devise/devise_generator.rb",
+     "lib/generators/devise/install_generator.rb",
+     "lib/generators/devise/orm_helpers.rb",
+     "lib/generators/devise/views_generator.rb",
+     "lib/generators/mongoid/devise_generator.rb",
+     "lib/generators/templates/README",
+     "lib/generators/templates/devise.rb"
   ]
   s.homepage = %q{http://github.com/plataformatec/devise}
   s.rdoc_options = ["--charset=UTF-8"]
@@ -113,11 +114,15 @@ Gem::Specification.new do |s|
      "test/devise_test.rb",
      "test/encryptors_test.rb",
      "test/failure_app_test.rb",
+     "test/generators/generators_test_helper.rb",
+     "test/generators/install_generator_test.rb",
+     "test/generators/views_generator_test.rb",
      "test/integration/authenticatable_test.rb",
      "test/integration/confirmable_test.rb",
      "test/integration/database_authenticatable_test.rb",
      "test/integration/http_authenticatable_test.rb",
      "test/integration/lockable_test.rb",
+     "test/integration/omniauthable_test.rb",
      "test/integration/recoverable_test.rb",
      "test/integration/registerable_test.rb",
      "test/integration/rememberable_test.rb",
@@ -130,6 +135,7 @@ Gem::Specification.new do |s|
      "test/mapping_test.rb",
      "test/models/confirmable_test.rb",
      "test/models/database_authenticatable_test.rb",
+     "test/models/encryptable_test.rb",
      "test/models/lockable_test.rb",
      "test/models/recoverable_test.rb",
      "test/models/rememberable_test.rb",
@@ -138,19 +144,20 @@ Gem::Specification.new do |s|
      "test/models/trackable_test.rb",
      "test/models/validatable_test.rb",
      "test/models_test.rb",
+     "test/omniauth/url_helpers_test.rb",
      "test/orm/active_record.rb",
-     "test/orm/data_mapper.rb",
      "test/orm/mongoid.rb",
      "test/rails_app/app/active_record/admin.rb",
      "test/rails_app/app/active_record/shim.rb",
      "test/rails_app/app/active_record/user.rb",
+     "test/rails_app/app/controllers/admins/sessions_controller.rb",
      "test/rails_app/app/controllers/admins_controller.rb",
      "test/rails_app/app/controllers/application_controller.rb",
      "test/rails_app/app/controllers/home_controller.rb",
-     "test/rails_app/app/controllers/sessions_controller.rb",
+     "test/rails_app/app/controllers/publisher/registrations_controller.rb",
+     "test/rails_app/app/controllers/publisher/sessions_controller.rb",
+     "test/rails_app/app/controllers/users/omniauth_callbacks_controller.rb",
      "test/rails_app/app/controllers/users_controller.rb",
-     "test/rails_app/app/data_mapper/admin.rb",
-     "test/rails_app/app/data_mapper/user.rb",
      "test/rails_app/app/helpers/application_helper.rb",
      "test/rails_app/app/mongoid/admin.rb",
      "test/rails_app/app/mongoid/shim.rb",
@@ -168,11 +175,12 @@ Gem::Specification.new do |s|
      "test/rails_app/config/routes.rb",
      "test/rails_app/db/migrate/20100401102949_create_tables.rb",
      "test/rails_app/db/schema.rb",
+     "test/rails_app/lib/shared_admin.rb",
+     "test/rails_app/lib/shared_user.rb",
      "test/routes_test.rb",
      "test/support/assertions.rb",
      "test/support/helpers.rb",
      "test/support/integration.rb",
-     "test/support/test_silencer.rb",
      "test/support/webrat/integrations/rails.rb",
      "test/test_helper.rb",
      "test/test_helpers_test.rb"
@@ -183,14 +191,17 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<warden>, ["~> 0.10.7"])
+      s.add_runtime_dependency(%q<warden>, ["~> 1.0.2"])
+      s.add_runtime_dependency(%q<orm_adapter>, ["~> 0.0.2"])
       s.add_runtime_dependency(%q<bcrypt-ruby>, ["~> 2.1.2"])
     else
-      s.add_dependency(%q<warden>, ["~> 0.10.7"])
+      s.add_dependency(%q<warden>, ["~> 1.0.2"])
+      s.add_dependency(%q<orm_adapter>, ["~> 0.0.2"])
       s.add_dependency(%q<bcrypt-ruby>, ["~> 2.1.2"])
     end
   else
-    s.add_dependency(%q<warden>, ["~> 0.10.7"])
+    s.add_dependency(%q<warden>, ["~> 1.0.2"])
+    s.add_dependency(%q<orm_adapter>, ["~> 0.0.2"])
     s.add_dependency(%q<bcrypt-ruby>, ["~> 2.1.2"])
   end
 end

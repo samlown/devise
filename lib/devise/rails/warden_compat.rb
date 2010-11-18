@@ -3,9 +3,9 @@ module Warden::Mixins::Common
     @request ||= ActionDispatch::Request.new(env)
   end
 
+  # This is called internally by Warden on logout
   def reset_session!
-    raw_session.inspect # why do I have to inspect it to get it to clear?
-    raw_session.clear
+    request.reset_session
   end
 
   def cookies
@@ -15,11 +15,28 @@ end
 
 class Warden::SessionSerializer
   def serialize(record)
-    [record.class, record.id]
+    [record.class.name, record.to_key, record.authenticatable_salt]
   end
 
   def deserialize(keys)
-    klass, id = keys
-    klass.find(:first, :conditions => { :id => id })
+    if keys.size == 2
+      raise "Devise changed how it stores objects in session. If you are seeing this message, " <<
+        "you can fix it by changing one character in your cookie secret or cleaning up your " <<
+        "database sessions if you are using a db store."
+    end
+
+    klass, id, salt = keys
+
+    begin
+      record = klass.constantize.to_adapter.get(id)
+      record if record && record.authenticatable_salt == salt
+    rescue NameError => e
+      if e.message =~ /uninitialized constant/
+        Rails.logger.debug "[Devise] Trying to deserialize invalid class #{klass}"
+        nil
+      else
+        raise
+      end
+    end
   end
 end
