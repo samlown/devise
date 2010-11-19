@@ -147,6 +147,7 @@ Gem::Specification.new do |s|
      "test/omniauth/url_helpers_test.rb",
      "test/orm/active_record.rb",
      "test/orm/mongoid.rb",
+     "test/orm/couchrest_model.rb",
      "test/rails_app/app/active_record/admin.rb",
      "test/rails_app/app/active_record/shim.rb",
      "test/rails_app/app/active_record/user.rb",
