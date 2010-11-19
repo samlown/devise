@@ -1,6 +1,6 @@
 module Devise
   module Orm
-    module CouchRest
+    module CouchrestModel
       module Hook
         def devise_modules_hook!
           extend Schema
@@ -24,4 +24,4 @@ module Devise
   end #Orm
 end #Devise
 CouchRest::Model::Base.send(:extend, Devise::Models)
-CouchRest::Model::Base.send(:include, Devise::Models)
+# CouchRest::Model::Base.sen(:include, Devise::Models)
